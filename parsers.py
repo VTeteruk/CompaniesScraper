@@ -1,6 +1,6 @@
 import dataclasses
 import time
-
+import pandas as pd
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -20,6 +20,31 @@ class ChromeParser:
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-blink-features=AutomationControlled")
         self.driver = webdriver.Chrome(options=options)
+
+    @staticmethod
+    def data_to_data_frame(
+            renovation_leads: list[RenovationLead]
+    ) -> pd.DataFrame:
+        data_list = [dataclasses.asdict(lead) for lead in renovation_leads]
+        return pd.DataFrame(data_list)
+
+    def save_data_to_csv(
+            self, renovation_leads: list[RenovationLead], file_name: str
+    ) -> None:
+        self.data_to_data_frame(renovation_leads).to_csv(
+            f"{file_name}.csv", index=False
+        )
+
+    def save_data_to_excel(
+            self, renovation_leads: list[RenovationLead], file_name: str
+    ) -> None:
+        self.data_to_data_frame(renovation_leads).to_excel(
+            f"{file_name}.xlsx", index=False
+        )
+
+    def destroy(self) -> None:
+        self.driver.close()
+        self.driver.quit()
 
 
 class GoogleMapsParser(ChromeParser):
@@ -86,9 +111,10 @@ class OwnersParser(ChromeParser):
 
 if __name__ == "__main__":
     parser = GoogleMapsParser()
-    print(
-        parser.main(
+    data = parser.main(
             "https://www.google.com/maps/search/"
             "renovation/@54.5540137,-1.546097,10z?entry=ttu"
         )
-    )
+    parser.save_data_to_excel(data, "renovation_leads")
+    parser.save_data_to_csv(data, "renovation_leads")
+    parser.destroy()
