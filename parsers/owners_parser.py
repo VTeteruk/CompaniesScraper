@@ -2,8 +2,8 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from models import BusinessOwner, RenovationLead
-from chrome_parser import ChromeParser
+from models.models import BusinessOwner, RenovationLead
+from parsers.chrome_parser import ChromeParser
 
 
 class OwnersParser(ChromeParser):

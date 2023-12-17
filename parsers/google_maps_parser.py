@@ -3,8 +3,8 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from models import RenovationLead
-from chrome_parser import ChromeParser
+from models.models import RenovationLead
+from parsers.chrome_parser import ChromeParser
 
 
 class GoogleMapsParser(ChromeParser):
@@ -13,7 +13,7 @@ class GoogleMapsParser(ChromeParser):
 
         while True:
             self.driver.execute_script("arguments[0].scrollTop += 500;", side_panel)
-            time.sleep(0.1)
+            time.sleep(0.2)
             try:
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break

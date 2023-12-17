@@ -1,5 +1,6 @@
-from google_maps_parser import GoogleMapsParser
-from owners_parser import OwnersParser
+from parsers.google_maps_parser import GoogleMapsParser
+from parsers.owners_parser import OwnersParser
+from utilities.saver import save_data_to_excel, save_data_to_csv
 
 if __name__ == "__main__":
     google_maps_parser = GoogleMapsParser()
@@ -10,6 +11,6 @@ if __name__ == "__main__":
     owners_parser = OwnersParser()
     owners_parser.find_owners(data)
 
-    google_maps_parser.save_data_to_excel(data, "renovation_leads")
-    google_maps_parser.save_data_to_csv(data, "renovation_leads")
+    save_data_to_excel(data, "renovation_leads")
+    save_data_to_csv(data, "renovation_leads")
     google_maps_parser.destroy()
