@@ -36,8 +36,8 @@ class OwnersParser(ChromeParser):
     ) -> bool:
         return self.is_half_similar(searched_company_name, real_company_name)
 
-    def extract_business_owners(self) -> list[BusinessOwner]:
-        business_owners: list[BusinessOwner] = []
+    def extract_business_owners(self) -> list[str]:
+        business_owners: list[str] = []
 
         try:
             self.driver.find_element(By.ID, "people-tab").click()
@@ -63,7 +63,7 @@ class OwnersParser(ChromeParser):
                 person_name = self.extract_person_name(person_block, person_index)
 
                 business_owners.append(
-                    BusinessOwner(person_name, person_role, person_status_tag)
+                    str(BusinessOwner(person_name, person_role, person_status_tag))
                 )
 
                 person_index += 1
@@ -73,7 +73,7 @@ class OwnersParser(ChromeParser):
 
         return business_owners
 
-    def scrap_business_owners(self, company_name: str) -> list[BusinessOwner]:
+    def scrap_business_owners(self, company_name: str) -> list[str]:
         self.driver.get(self.search_url(company_name))
 
         search_result = self.driver.find_elements(
