@@ -4,7 +4,7 @@ from utilities.saver import save_data_to_excel, save_data_to_csv
 
 def main(site_url: str) -> None:
     parser = CompaniesDataParser()
-    data = parser.main(site_url)  # TODO: use more accurate class method
+    data = parser.extract_google_maps_data(site_url)
     parser.find_owners(data)
     parser.destroy()
 

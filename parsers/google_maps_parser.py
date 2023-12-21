@@ -44,7 +44,7 @@ class GoogleMapsParser(ChromeParser):
             else None,
         )
 
-    def main(self, google_maps_url: str) -> list[RenovationLead]:
+    def extract_google_maps_data(self, google_maps_url: str) -> list[RenovationLead]:
         self.driver.get(google_maps_url)
 
         self.scroll_to_the_end_of_sidebar()
