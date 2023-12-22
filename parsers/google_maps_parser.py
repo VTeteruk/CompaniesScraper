@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import re
 
+from settings import BASE_GOOGLE_MAPS_URL
 from models.models import RenovationLead
 from parsers.chrome_parser import ChromeParser
 
@@ -12,8 +13,8 @@ from tqdm import tqdm
 
 
 class GoogleMapsUrlParser(ChromeParser):
-    def extract_city_coordinates(self, city: str, default_url: str) -> str:
-        self.driver.get(default_url + city.replace(" ", "+"))
+    def extract_city_coordinates(self, city: str) -> str:
+        self.driver.get(BASE_GOOGLE_MAPS_URL + city.replace(" ", "+"))
 
         wrong_url = self.driver.current_url
         correct_url = wrong_url
@@ -26,12 +27,11 @@ class GoogleMapsUrlParser(ChromeParser):
             self,
             companies_field: str,
             city: str,
-            default_url: str = "https://www.google.com/maps/search/"
     ) -> str:
-        """Generate url for searching companies' field in the city"""
-        city_coordinates = self.extract_city_coordinates(city=city, default_url=default_url)
+        """Generate url for searching companies with companies_field in the city"""
+        city_coordinates = self.extract_city_coordinates(city=city)
 
-        return default_url + companies_field + city_coordinates
+        return BASE_GOOGLE_MAPS_URL + companies_field + city_coordinates
 
 
 class GoogleMapsParser(GoogleMapsUrlParser):
@@ -39,8 +39,10 @@ class GoogleMapsParser(GoogleMapsUrlParser):
         side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
 
         while True:
-            self.driver.execute_script("arguments[0].scrollTop += 400;", side_panel)
-            time.sleep(0.3)
+            self.driver.execute_script(
+                "arguments[0].scrollTop += 600;", side_panel
+            )
+            time.sleep(0.1)
             try:
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break

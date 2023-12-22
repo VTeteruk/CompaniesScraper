@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from tqdm import tqdm
 
+from settings import BASE_GOV_URL
 from models.models import BusinessOwner, RenovationLead
 from parsers.chrome_parser import ChromeParser
 
@@ -10,7 +11,7 @@ from parsers.chrome_parser import ChromeParser
 class OwnersParser(ChromeParser):
     @staticmethod
     def search_url(company_name: str) -> str:
-        return f"https://find-and-update.company-information.service.gov.uk/search?q={company_name.replace(' ', '+')}"
+        return f"{BASE_GOV_URL}search?q={company_name.replace(' ', '+')}"
 
     @staticmethod
     def is_half_similar(string1: str, string2) -> bool:
@@ -86,6 +87,7 @@ class OwnersParser(ChromeParser):
         if self.validate_company_name(stripped_searched_company_name, company_name):
             searched_company_name_link.click()
             return self.extract_business_owners()
+        return []
 
     def find_owners(
         self, renovation_leads: list[RenovationLead]
