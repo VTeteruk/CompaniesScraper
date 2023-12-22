@@ -2,8 +2,9 @@ from parsers.companies_data_parser import CompaniesDataParser
 from utilities.saver import save_data_to_excel, save_data_to_csv
 
 
-def main(site_url: str) -> None:
+def main(companies_field: str, city: str) -> None:
     parser = CompaniesDataParser()
+    site_url = parser.generate_google_maps_url(companies_field=companies_field, city=city)
     data = parser.extract_google_maps_data(site_url)
     parser.find_owners(data)
     parser.destroy()
@@ -13,7 +14,4 @@ def main(site_url: str) -> None:
 
 
 if __name__ == "__main__":
-    main(
-        site_url="https://www.google.com/maps/search/"
-        "renovation/@52.583251,-0.2907134,12.05z?entry=ttu"
-    )
+    main("renovation", "London")

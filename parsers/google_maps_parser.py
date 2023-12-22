@@ -2,6 +2,7 @@ import time
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+import re
 
 from models.models import RenovationLead
 from parsers.chrome_parser import ChromeParser
@@ -10,13 +11,36 @@ import logging
 from tqdm import tqdm
 
 
-class GoogleMapsParser(ChromeParser):
+class GoogleMapsUrlParser(ChromeParser):
+    def extract_city_coordinates(self, city: str, default_url: str) -> str:
+        self.driver.get(default_url + city.replace(" ", "+"))
+
+        wrong_url = self.driver.current_url
+        correct_url = wrong_url
+        while correct_url == wrong_url:
+            correct_url = self.driver.current_url
+
+        return re.findall(r"/@.*/", correct_url)[0]
+
+    def generate_google_maps_url(
+            self,
+            companies_field: str,
+            city: str,
+            default_url: str = "https://www.google.com/maps/search/"
+    ) -> str:
+        """Generate url for searching companies' field in the city"""
+        city_coordinates = self.extract_city_coordinates(city=city, default_url=default_url)
+
+        return default_url + companies_field + city_coordinates
+
+
+class GoogleMapsParser(GoogleMapsUrlParser):
     def scroll_to_the_end_of_sidebar(self) -> None:
         side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
 
         while True:
-            self.driver.execute_script("arguments[0].scrollTop += 500;", side_panel)
-            time.sleep(0.2)
+            self.driver.execute_script("arguments[0].scrollTop += 400;", side_panel)
+            time.sleep(0.3)
             try:
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break
