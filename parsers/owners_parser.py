@@ -14,15 +14,11 @@ class OwnersParser(ChromeParser):
 
     @staticmethod
     def is_half_similar(string1: str, string2) -> bool:
-        string1 = string1.lower()
-        string2 = string2.lower()
+        words1 = set(string1.lower().split())
+        words2 = set(string2.lower().split())
+        intersection = words1.intersection(words2)
 
-        return (
-            len([word for word in string1.split() if word in string2])
-            >= len(string2.split()) / 2
-            or len([word for word in string2.split() if word in string1])
-            >= len(string1.split()) / 2
-        )
+        return len(intersection) >= min(len(words1), len(words2)) / 2
 
     @staticmethod
     def extract_person_name(person_block: WebElement, person_index: int) -> str:
@@ -68,7 +64,6 @@ class OwnersParser(ChromeParser):
                 )
 
                 person_index += 1
-
             except NoSuchElementException:
                 break
 
