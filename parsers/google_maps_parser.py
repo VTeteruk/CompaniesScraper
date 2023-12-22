@@ -1,5 +1,6 @@
 import time
 from selenium.common import NoSuchElementException
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import re
@@ -40,14 +41,12 @@ class GoogleMapsParser(GoogleMapsUrlParser):
         side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
 
         while True:
-            self.driver.execute_script(
-                "arguments[0].scrollTop += 600;", side_panel
-            )
+            side_panel.send_keys(Keys.PAGE_DOWN)
             try:
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break
             except NoSuchElementException:
-                time.sleep(0.1)
+                time.sleep(0.4)
 
     def get_companies_blocks(self) -> list[WebElement]:
         return self.driver.find_elements(By.CLASS_NAME, "lI9IFe")
