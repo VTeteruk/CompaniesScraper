@@ -29,6 +29,7 @@ class GoogleMapsUrlParser(ChromeParser):
             city: str,
     ) -> str:
         """Generate url for searching companies with companies_field in the city"""
+        logging.info(f"Generating url for {companies_field} in {city}...")
         city_coordinates = self.extract_city_coordinates(city=city)
 
         return BASE_GOOGLE_MAPS_URL + companies_field + city_coordinates
@@ -42,12 +43,11 @@ class GoogleMapsParser(GoogleMapsUrlParser):
             self.driver.execute_script(
                 "arguments[0].scrollTop += 600;", side_panel
             )
-            time.sleep(0.1)
             try:
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break
             except NoSuchElementException:
-                pass
+                time.sleep(0.1)
 
     def get_companies_blocks(self) -> list[WebElement]:
         return self.driver.find_elements(By.CLASS_NAME, "lI9IFe")
