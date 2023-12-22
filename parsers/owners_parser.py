@@ -1,6 +1,7 @@
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from tqdm import tqdm
 
 from models.models import BusinessOwner, RenovationLead
 from parsers.chrome_parser import ChromeParser
@@ -94,7 +95,7 @@ class OwnersParser(ChromeParser):
     def find_owners(
         self, renovation_leads: list[RenovationLead]
     ) -> list[RenovationLead]:
-        for renovation_lead in renovation_leads:
+        for renovation_lead in tqdm(renovation_leads, desc="Parsing owners' names"):
             business_owners = self.scrap_business_owners(renovation_lead.company_name)
             renovation_lead.business_owners = business_owners
 

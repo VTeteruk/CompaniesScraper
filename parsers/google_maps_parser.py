@@ -6,6 +6,9 @@ from selenium.webdriver.remote.webelement import WebElement
 from models.models import RenovationLead
 from parsers.chrome_parser import ChromeParser
 
+import logging
+from tqdm import tqdm
+
 
 class GoogleMapsParser(ChromeParser):
     def scroll_to_the_end_of_sidebar(self) -> None:
@@ -47,10 +50,17 @@ class GoogleMapsParser(ChromeParser):
     def extract_google_maps_data(self, google_maps_url: str) -> list[RenovationLead]:
         self.driver.get(google_maps_url)
 
+        logging.info("Scrolling to the end of the sidebar...")
         self.scroll_to_the_end_of_sidebar()
 
         renovation_leads = []
 
-        for block in self.get_companies_blocks():
+        for block in tqdm(self.get_companies_blocks(), desc="Parsing google maps data"):
             renovation_leads.append(self.create_renovation_lead_instance(block))
         return renovation_leads
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s - %(message)s"
+)
