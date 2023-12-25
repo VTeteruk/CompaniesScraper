@@ -79,8 +79,6 @@ class OwnersParser(ChromeParser):
             By.XPATH, '//a[@title="View company"]'
         )
 
-        print(search_result)
-
         if not len(search_result):
             return []
 
