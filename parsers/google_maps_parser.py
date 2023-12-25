@@ -46,7 +46,9 @@ class GoogleMapsParser(GoogleMapsUrlParser):
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break
             except NoSuchElementException:
-                time.sleep(0.4)
+                time.sleep(0.2)
+                self.driver.execute_script("arguments[0].scrollTop -= 100;", side_panel)
+                time.sleep(0.2)
 
     def get_companies_blocks(self) -> list[WebElement]:
         return self.driver.find_elements(By.CLASS_NAME, "lI9IFe")
