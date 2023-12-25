@@ -48,11 +48,14 @@ class GoogleMapsUrlParser(ChromeParser):
 
 
 class GoogleMapsParser(GoogleMapsUrlParser):
-    def scroll_to_the_end_of_sidebar(self) -> None:
+    def get_side_panel(self) -> WebElement:
         try:
-            side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
+            return self.driver.find_element(By.XPATH, "//div[@role='feed']")
         except NoSuchElementException:
             raise ValueError("Companies field can't be found")
+
+    def scroll_to_the_end_of_sidebar(self) -> None:
+        side_panel = self.get_side_panel()
 
         while True:
             # Scroll to the end of the side_panel
