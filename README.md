@@ -3,9 +3,9 @@
 This Python script is designed to scrape renovation _**(or other fields)**_ leads from Google Maps and gather information about business owners from the UK government website. The script utilizes Selenium for web scraping, Pandas for data manipulation, and tqdm for progress tracking.
 ___
 ## Features
-* **Google Maps Scraper:** Generates a Google Maps URL based on the specified companies' field and city. It then extracts renovation leads' information from the Google Maps search results.
+* **Google Maps Scraper:** Generates a Google Maps URL based on the specified companies' field and city. Then it extracts specified information from the Google Maps search results.
 
-* **UK Government Website Scraper:** Searches for business owners associated with each renovation lead on the UK government website. It collects information such as the person's name, role, and status tag.
+* **UK Government Website Scraper:** Searches for business owners on the UK government website. It collects information such as the person's name, role, and status tag.
 
 * **Data Processing and Saving:** The collected data is processed into a DataFrame using Pandas and saved to both CSV and Excel files.
 ___
