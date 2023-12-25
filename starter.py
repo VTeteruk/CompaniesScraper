@@ -22,11 +22,14 @@ def main(companies_field: str, city: str) -> None:
 
 if __name__ == "__main__":
     if INPUT_MODE:
-        companies_field = input("Enter companies' field: ")
-        city = input("Enter city: ")
+        companies_field_input = input("Enter companies' field: ")
+        city_input = input("Enter city: ")
         main(
-            companies_field=companies_field if companies_field else DEFAULT_COMPANIES_FIELD,
-            city=city if city else DEFAULT_CITY
+            companies_field=companies_field_input
+            if companies_field_input
+            else DEFAULT_COMPANIES_FIELD,
+
+            city=city_input if city_input else DEFAULT_CITY
         )
     else:
         main(DEFAULT_COMPANIES_FIELD, DEFAULT_CITY)
