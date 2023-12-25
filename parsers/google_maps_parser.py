@@ -17,11 +17,13 @@ class GoogleMapsUrlParser(ChromeParser):
     def extract_city_coordinates(self, city: str) -> str:
         self.driver.get(BASE_GOOGLE_MAPS_URL + city.replace(" ", "+"))
 
+        # Waiting until the URL is correctly updated after navigation
         wrong_url = self.driver.current_url
         correct_url = wrong_url
         while correct_url == wrong_url:
             correct_url = self.driver.current_url
 
+        # Extracting and returning the city coordinates from the correct URL
         return re.findall(r"/@.*/", correct_url)[0]
 
     def generate_google_maps_url(
@@ -41,12 +43,15 @@ class GoogleMapsParser(GoogleMapsUrlParser):
         side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
 
         while True:
+            # Scroll to the end of the side_panel
             side_panel.send_keys(Keys.PAGE_DOWN)
             try:
+                # Check if the program reached the end of the sidebar
                 self.driver.find_element(By.CLASS_NAME, "HlvSq")
                 break
             except NoSuchElementException:
                 time.sleep(0.2)
+                # Scroll up to prevent freezing
                 self.driver.execute_script("arguments[0].scrollTop -= 100;", side_panel)
                 time.sleep(0.2)
 
@@ -82,11 +87,13 @@ class GoogleMapsParser(GoogleMapsUrlParser):
 
         renovation_leads = []
 
-        for block in tqdm(self.get_companies_blocks(), desc="Parsing google maps data"):
+        for block in tqdm(self.get_companies_blocks(), desc="Parsing Google Maps data"):
             renovation_leads.append(self.create_renovation_lead_instance(block))
+
         return renovation_leads
 
 
+# Configuring logging with INFO level and a specific format
 logging.basicConfig(
     level=logging.INFO,
     format="%(levelname)s - %(message)s"

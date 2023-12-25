@@ -45,6 +45,7 @@ class OwnersParser(ChromeParser):
         person_index = 1
         while True:
             try:
+                # Locating elements representing a person block
                 person_block = self.driver.find_element(
                     By.CLASS_NAME, f"appointment-{person_index}"
                 )
@@ -56,6 +57,7 @@ class OwnersParser(ChromeParser):
                     By.ID, f"officer-role-{person_index}"
                 )
 
+                # Extracting information about the person
                 person_status_tag = person_status_tag_block.text.strip()
                 person_role = person_role_block.text.strip()
                 person_name = self.extract_person_name(person_block, person_index)
@@ -92,7 +94,7 @@ class OwnersParser(ChromeParser):
     def find_owners(
         self, renovation_leads: list[RenovationLead]
     ) -> list[RenovationLead]:
-        for renovation_lead in tqdm(renovation_leads, desc="Parsing owners' names"):
+        for renovation_lead in tqdm(renovation_leads, desc="Parsing owners' data"):
             business_owners = self.scrap_business_owners(renovation_lead.company_name)
             renovation_lead.business_owners = business_owners
 
