@@ -9,15 +9,20 @@ from settings import (
 )
 
 
-def main(companies_field: str, city: str) -> None:
+def main(
+        companies_field: str,
+        city: str,
+        xlsx_file_path: str = FILE_PATH_FOR_XLSX,
+        csv_file_path: str = FILE_PATH_FOR_CSV
+) -> None:
     parser = CompaniesDataParser()
     site_url = parser.generate_google_maps_url(companies_field=companies_field, city=city)
     data = parser.extract_google_maps_data(site_url)
     parser.find_owners(data)
     parser.destroy()
 
-    save_data_to_excel(data, file_path=FILE_PATH_FOR_XLSX)
-    save_data_to_csv(data, file_path=FILE_PATH_FOR_CSV)
+    save_data_to_excel(data, file_path=xlsx_file_path)
+    save_data_to_csv(data, file_path=csv_file_path)
 
 
 if __name__ == "__main__":
@@ -28,7 +33,6 @@ if __name__ == "__main__":
             companies_field=companies_field_input
             if companies_field_input
             else DEFAULT_COMPANIES_FIELD,
-
             city=city_input if city_input else DEFAULT_CITY
         )
     else:
