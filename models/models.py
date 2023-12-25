@@ -12,8 +12,8 @@ class BusinessOwner:
 
 
 @dataclasses.dataclass
-class RenovationLead:
-    company_name: str
-    company_number: str | None
-    company_website: str = None
-    business_owners: list[BusinessOwner] = None
+class Company:
+    name: str
+    number: str | None
+    website: str = None
+    owners: list[BusinessOwner] = None

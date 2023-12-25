@@ -4,7 +4,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from tqdm import tqdm
 
 from settings import BASE_GOV_URL
-from models.models import BusinessOwner, RenovationLead
+from models.models import BusinessOwner, Company
 from parsers.chrome_parser import ChromeParser
 
 
@@ -78,7 +78,10 @@ class OwnersParser(ChromeParser):
         search_result = self.driver.find_elements(
             By.XPATH, '//a[@title="View company"]'
         )
-        if len(search_result) == 0:
+
+        print(search_result)
+
+        if not len(search_result):
             return []
 
         searched_company_name_link = self.driver.find_elements(
@@ -92,10 +95,10 @@ class OwnersParser(ChromeParser):
         return []
 
     def find_owners(
-        self, renovation_leads: list[RenovationLead]
-    ) -> list[RenovationLead]:
-        for renovation_lead in tqdm(renovation_leads, desc="Parsing owners' data"):
-            business_owners = self.scrap_business_owners(renovation_lead.company_name)
-            renovation_lead.business_owners = business_owners
+        self, companies: list[Company]
+    ) -> list[Company]:
+        for company in tqdm(companies, desc="Parsing owners' data"):
+            business_owners = self.scrap_business_owners(company.name)
+            company.owners = business_owners
 
-        return renovation_leads
+        return companies

@@ -6,11 +6,17 @@ from selenium.webdriver.remote.webelement import WebElement
 import re
 
 from settings import BASE_GOOGLE_MAPS_URL
-from models.models import RenovationLead
+from models.models import Company
 from parsers.chrome_parser import ChromeParser
 
 import logging
 from tqdm import tqdm
+
+# Configuring logging with INFO level and a specific format
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s - %(message)s"
+)
 
 
 class GoogleMapsUrlParser(ChromeParser):
@@ -24,7 +30,10 @@ class GoogleMapsUrlParser(ChromeParser):
             correct_url = self.driver.current_url
 
         # Extracting and returning the city coordinates from the correct URL
-        return re.findall(r"/@.*/", correct_url)[0]
+        try:
+            return re.findall(r"/@.*/", correct_url)[0]
+        except IndexError:
+            raise ValueError("City can't be found")
 
     def generate_google_maps_url(
             self,
@@ -40,7 +49,10 @@ class GoogleMapsUrlParser(ChromeParser):
 
 class GoogleMapsParser(GoogleMapsUrlParser):
     def scroll_to_the_end_of_sidebar(self) -> None:
-        side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
+        try:
+            side_panel = self.driver.find_element(By.XPATH, "//div[@role='feed']")
+        except NoSuchElementException:
+            raise ValueError("Companies field can't be found")
 
         while True:
             # Scroll to the end of the side_panel
@@ -66,35 +78,29 @@ class GoogleMapsParser(GoogleMapsUrlParser):
         except NoSuchElementException:
             return None
 
-    def create_renovation_lead_instance(self, block: WebElement) -> RenovationLead:
+    def create_companies_instance(self, block: WebElement) -> Company:
         company_name = self.initialize_company_data(block, "qBF1Pd")
         company_number = self.initialize_company_data(block, "UsdlK")
         company_website = self.initialize_company_data(block, "lcr4fd")
 
-        return RenovationLead(
-            company_name=company_name.text if company_name else None,
-            company_number=company_number.text if company_number else None,
-            company_website=company_website.get_attribute("href")
+        return Company(
+            name=company_name.text if company_name else None,
+            number=company_number.text if company_number else None,
+            website=company_website.get_attribute("href")
             if company_website
             else None,
         )
 
-    def extract_google_maps_data(self, google_maps_url: str) -> list[RenovationLead]:
+    def extract_google_maps_data(self, google_maps_url: str) -> list[Company]:
         self.driver.get(google_maps_url)
 
         logging.info("Scrolling to the end of the sidebar...")
         self.scroll_to_the_end_of_sidebar()
 
-        renovation_leads = []
+        companies = [
+            self.create_companies_instance(block)
+            for block
+            in tqdm(self.get_companies_blocks(), desc="Parsing Google Maps data")
+        ]
 
-        for block in tqdm(self.get_companies_blocks(), desc="Parsing Google Maps data"):
-            renovation_leads.append(self.create_renovation_lead_instance(block))
-
-        return renovation_leads
-
-
-# Configuring logging with INFO level and a specific format
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s - %(message)s"
-)
+        return companies
