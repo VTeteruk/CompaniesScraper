@@ -52,7 +52,7 @@ class GoogleMapsParser(GoogleMapsUrlParser):
         try:
             return self.driver.find_element(By.XPATH, "//div[@role='feed']")
         except NoSuchElementException:
-            raise ValueError("Companies field can't be found")
+            raise ValueError("Companies' field can't be found")
 
     def scroll_to_the_end_of_sidebar(self) -> None:
         side_panel = self.get_side_panel()
