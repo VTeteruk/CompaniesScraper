@@ -19,5 +19,5 @@ USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
 
-# Parser settings
+# Starter settings
 INPUT_MODE = True
