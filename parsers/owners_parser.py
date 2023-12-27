@@ -11,10 +11,10 @@ from parsers.chrome_parser import ChromeParser
 class OwnersParser(ChromeParser):
     @staticmethod
     def search_url(company_name: str) -> str:
-        return f"{BASE_GOV_URL}search?q={company_name.replace(' ', '+')}"
+        return f"{BASE_GOV_URL}search?q={company_name.replace(' ', '+').replace('&', '+')}"
 
     @staticmethod
-    def is_half_similar(string1: str, string2) -> bool:
+    def is_half_similar(string1: str, string2: str) -> bool:
         words1 = set(string1.lower().split())
         words2 = set(string2.lower().split())
         intersection = words1.intersection(words2)
@@ -75,16 +75,14 @@ class OwnersParser(ChromeParser):
     def scrap_business_owners(self, company_name: str) -> list[str]:
         self.driver.get(self.search_url(company_name))
 
-        search_result = self.driver.find_elements(
-            By.XPATH, '//a[@title="View company"]'
-        )
-
-        if not len(search_result):
+        try:
+            search_result = self.driver.find_elements(
+                By.XPATH, '//a[@title="View company"]'
+            )
+        except NoSuchElementException:
             return []
 
-        searched_company_name_link = self.driver.find_elements(
-            By.XPATH, '//a[@title="View company"]'
-        )[0]
+        searched_company_name_link = search_result[0]
         stripped_searched_company_name = searched_company_name_link.text.strip()
 
         if self.validate_company_name(stripped_searched_company_name, company_name):

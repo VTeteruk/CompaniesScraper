@@ -13,6 +13,7 @@ class ChromeParser:
         # Setting the user-agent for the web browser to mimic a specific client
         options.add_argument(f"user-agent={USER_AGENT}")
 
+        # Hiding useless logging
         options.add_argument("--log-level=3")
 
         # Checking if the browser should run in headless mode (without GUI)
