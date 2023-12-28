@@ -10,7 +10,7 @@ class AsyncOwnersParser:
     @staticmethod
     def search_url(company_name: str) -> str:
         return (
-            f"{BASE_GOV_URL}search?q={company_name.replace(' ', '+').replace('&', '+')}"
+            f"{BASE_GOV_URL}search?q={company_name.replace(' ', '+').replace('&', '%26')}"
         )
 
     @staticmethod
