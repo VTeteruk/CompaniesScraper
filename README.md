@@ -51,4 +51,4 @@ ___
 * The `scroll_to_the_end_of_sidebar` method in [google_maps_parser.py](parsers/google_maps_parser.py) is intentionally designed to provide a safe and reliable way of navigating through the Google Maps sidebar (as sometimes Google Maps may just freeze). While there might be faster scrolling techniques, this method has proven to be robust and effective through extensive testing.
 
 
-* The `extract_business_owners` method in [owners_parser.py](parsers/owners_parser.py) employs the use of the `person_index` parameter to accommodate scenarios where a company might have multiple owners or where other staff members are specified. This flexibility allows for a more comprehensive and accurate extraction of business ownership information.
+* The `extract_business_owners` method in [owners_parser.py](parsers/owners_parser.py) / [async_owners_parser.py](parsers/async_owners_parser.py) employs the use of the `person_index` parameter to accommodate scenarios where a company might have multiple owners or where other staff members are specified. This flexibility allows for a more comprehensive and accurate extraction of business ownership information.
