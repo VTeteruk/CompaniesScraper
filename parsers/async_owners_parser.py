@@ -55,7 +55,7 @@ class AsyncOwnersParser:
         return business_owners
 
     @staticmethod
-    async def make_request(session, url: str) -> str:
+    async def fetch_url_content(session, url: str) -> str:
         try:
             async with session.get(url) as response:
                 return await response.text()
@@ -64,7 +64,7 @@ class AsyncOwnersParser:
             return ""
 
     async def get_owners(self, session, company_url: str) -> list[str]:
-        text_response = await self.make_request(session, company_url)
+        text_response = await self.fetch_url_content(session, company_url)
         if not text_response:
             return []
 
@@ -72,9 +72,9 @@ class AsyncOwnersParser:
         business_owners = self.extract_business_owners(soup)
         return business_owners
 
-    async def find_url(self, session, company: Company) -> None:
+    async def set_owners(self, session, company: Company) -> None:
         url = self.search_url(company.name)
-        text_response = await self.make_request(session, url)
+        text_response = await self.fetch_url_content(session, url)
 
         if not text_response:
             company.owners = []
@@ -93,12 +93,12 @@ class AsyncOwnersParser:
             )
             company.owners = await self.get_owners(session, company_url)
 
-    async def main(self, companies: list[Company]) -> None:
+    async def create_coroutines(self, companies: list[Company]) -> None:
         headers = {"user-agent": USER_AGENT}
 
         async with aiohttp.ClientSession(headers=headers) as session:
-            coroutines = [self.find_url(session, company) for company in companies]
+            coroutines = [self.set_owners(session, company) for company in companies]
             await asyncio.gather(*coroutines)
 
     def find_owners(self, companies: list[Company]) -> None:
-        asyncio.run(self.main(companies=companies))
+        asyncio.run(self.create_coroutines(companies=companies))
