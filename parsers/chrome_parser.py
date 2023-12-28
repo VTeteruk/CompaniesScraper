@@ -1,5 +1,5 @@
+from __future__ import annotations
 from selenium import webdriver
-
 from settings import HEADLESS, USER_AGENT
 
 
@@ -22,6 +22,12 @@ class ChromeParser:
 
         self.driver = webdriver.Chrome(options=options)
 
-    def destroy(self) -> None:
+    def __enter__(self) -> ChromeParser:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.destroy_driver()
+
+    def destroy_driver(self) -> None:
         self.driver.close()
         self.driver.quit()
