@@ -33,10 +33,9 @@ def main() -> None:
             companies_field=companies_field, city=city
         )
         data = parser.extract_google_maps_data(site_url)
-        parser.destroy_driver()
 
-        logging.info("Looking for owners...")
-        parser.find_owners(data)
+    logging.info("Looking for owners...")
+    parser.find_owners(data)
 
     logging.info("Saving data...")
     save_data_to_excel(data, file_path=FILE_PATH_FOR_XLSX)
