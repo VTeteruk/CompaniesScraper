@@ -1,6 +1,6 @@
 # Companies Scraper
 ## Overview
-This Python script is designed to scrape leads in the renovation _*(or other specified fields)*_ industry from Google Maps and gather information about business owners from the UK government website. The script utilizes Selenium for web scraping, Pandas for data manipulation, and tqdm for progress tracking.
+This Python script is designed to scrape leads in the renovation _*(or other specified fields)*_ industry from Google Maps and gather information about business owners from the UK government website. The script utilizes Selenium, aiohttp and bs4 for web scraping, Pandas for data manipulation, and tqdm for progress tracking.
 ___
 ## Features
 * **Google Maps Scraper:** Generates a Google Maps URL based on the specified industry and city. Then, it extracts specified information from the Google Maps search results.
@@ -11,7 +11,8 @@ ___
 ___
 ## Requirements
 1. [Python 3.x](https://www.python.org/downloads/) must be installed.
-2. Create and activate your virtual environment:
+2. Copy the project.
+3. Create and activate your virtual environment:
    * For Mac/Linux:
      ```bash
      python3 -m venv venv
@@ -22,7 +23,7 @@ ___
      python -m venv venv
      venv\Scripts\activate.bat
      ```
-3. Install the required Python libraries using the following command:
+4. Install the required Python libraries using the following command:
    ```bash
    pip install -r requirements.txt
 ___
@@ -51,4 +52,4 @@ ___
 * The `scroll_to_the_end_of_sidebar` method in [google_maps_parser.py](parsers/google_maps_parser.py) is intentionally designed to provide a safe and reliable way of navigating through the Google Maps sidebar (as sometimes Google Maps may just freeze). While there might be faster scrolling techniques, this method has proven to be robust and effective through extensive testing.
 
 
-* The `extract_business_owners` method in [owners_parser.py](parsers/owners_parser.py) employs the use of the `person_index` parameter to accommodate scenarios where a company might have multiple owners or where other staff members are specified. This flexibility allows for a more comprehensive and accurate extraction of business ownership information.
+* The `extract_business_owners` method in [owners_parser.py](parsers/owners_parser.py) / [async_owners_parser.py](parsers/async_owners_parser.py) employs the use of the `person_index` parameter to accommodate scenarios where a company might have multiple owners or where other staff members are specified. This flexibility allows for a more comprehensive and accurate extraction of business ownership information.

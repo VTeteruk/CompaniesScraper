@@ -5,18 +5,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import re
 
-from settings import BASE_GOOGLE_MAPS_URL
+from settings import BASE_GOOGLE_MAPS_URL, configure_logging
 from models.models import Company
 from parsers.chrome_parser import ChromeParser
 
 import logging
 from tqdm import tqdm
 
-# Configuring logging with INFO level and a specific format
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s - %(message)s"
-)
+configure_logging()
 
 
 class GoogleMapsUrlParser(ChromeParser):
