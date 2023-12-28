@@ -54,42 +54,44 @@ class AsyncOwnersParser:
 
         return business_owners
 
+    @staticmethod
+    async def make_request(session, url: str) -> str:
+        try:
+            async with session.get(url) as response:
+                return await response.text()
+        except Exception as e:
+            print(f"Error getting response text: {e}")
+            return ""
+
     async def get_owners(self, session, company_url: str) -> list[str]:
-        async with session.get(company_url) as response:
-            try:
-                text_response = await response.text()
-            except Exception as e:
-                print(f"Error getting response text: {e}")
-                return []
+        text_response = await self.make_request(session, company_url)
+        if not text_response:
+            return []
 
-            soup = BeautifulSoup(text_response, "html.parser")
-
-            business_owners = self.extract_business_owners(soup)
-            return business_owners
+        soup = BeautifulSoup(text_response, "html.parser")
+        business_owners = self.extract_business_owners(soup)
+        return business_owners
 
     async def find_url(self, session, company: Company) -> None:
         url = self.search_url(company.name)
+        text_response = await self.make_request(session, url)
 
-        async with session.get(url) as response:
-            try:
-                text_response = await response.text()
-            except Exception as e:
-                print(f"Error getting response text: {e}")
-                company.owners = []
-                return
+        if not text_response:
+            company.owners = []
+            return
 
-            soup = BeautifulSoup(text_response, "html.parser")
-            searched_company_name_link = soup.find("a", {"title": "View company"})
+        soup = BeautifulSoup(text_response, "html.parser")
+        searched_company_name_link = soup.find("a", {"title": "View company"})
 
-            if not searched_company_name_link or not self.is_half_similar(
-                searched_company_name_link.text.strip(), company.name
-            ):
-                company.owners = []
-            else:
-                company_url = (
-                    f"{BASE_GOV_URL[:-1]}{searched_company_name_link.get('href')}/officers"
-                )
-                company.owners = await self.get_owners(session, company_url)
+        if not searched_company_name_link or not self.is_half_similar(
+            searched_company_name_link.text.strip(), company.name
+        ):
+            company.owners = []
+        else:
+            company_url = (
+                f"{BASE_GOV_URL[:-1]}{searched_company_name_link.get('href')}/officers"
+            )
+            company.owners = await self.get_owners(session, company_url)
 
     async def main(self, companies: list[Company]) -> None:
         headers = {"user-agent": USER_AGENT}
