@@ -14,6 +14,7 @@ class BusinessOwner:
 @dataclasses.dataclass
 class Company:
     name: str
-    number: str | None
+    searched_company_name: str = None
+    number: str = None
     website: str = None
     owners: list[BusinessOwner] = None

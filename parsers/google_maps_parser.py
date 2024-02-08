@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import re
 
-from settings import BASE_GOOGLE_MAPS_URL, configure_logging
+from settings import BASE_GOOGLE_MAPS_URL, configure_logging, USE_DIRECT_URL, DIRECT_URL
 from models.models import Company
 from parsers.chrome_parser import ChromeParser
 
@@ -39,6 +39,8 @@ class GoogleMapsUrlParser(ChromeParser):
             self, companies_field: str, city: str,
     ) -> str:
         """Generate url for searching companies with companies_field in the city"""
+        if USE_DIRECT_URL:
+            return DIRECT_URL
         logging.info(f"Generating url for {companies_field} in {city}...")
         city_coordinates = self.extract_city_coordinates(city=city)
 

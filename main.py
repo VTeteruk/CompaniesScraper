@@ -8,7 +8,7 @@ from settings import (
     FILE_PATH_FOR_XLSX,
     FILE_PATH_FOR_CSV,
     INPUT_MODE,
-    configure_logging,
+    configure_logging, USE_DIRECT_URL,
 )
 
 configure_logging()
@@ -24,9 +24,11 @@ def get_user_input() -> tuple[str, str]:
 
 
 def main() -> None:
-    companies_field, city = (
-        get_user_input() if INPUT_MODE else (DEFAULT_COMPANIES_FIELD, DEFAULT_CITY)
-    )
+    companies_field, city = None, None
+    if not USE_DIRECT_URL:
+        companies_field, city = (
+            get_user_input() if INPUT_MODE else (DEFAULT_COMPANIES_FIELD, DEFAULT_CITY)
+        )
 
     with CompaniesDataParser() as parser:
         site_url = parser.generate_google_maps_url(

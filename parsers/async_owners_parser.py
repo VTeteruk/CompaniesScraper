@@ -92,6 +92,7 @@ class AsyncOwnersParser:
                 f"{BASE_GOV_URL[:-1]}{searched_company_name_link.get('href')}/officers"
             )
             company.owners = await self.get_owners(session, company_url)
+            company.searched_company_name = searched_company_name_link.text.strip()
 
     async def create_coroutines(self, companies: list[Company]) -> None:
         headers = {"user-agent": USER_AGENT}

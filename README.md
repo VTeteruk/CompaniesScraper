@@ -16,11 +16,15 @@ ___
    * For Mac/Linux:
      ```bash
      python3 -m venv venv
+     ```
+     ```bash
      source venv/bin/activate
      ```
    * For Windows:
      ```bash
      python -m venv venv
+     ```
+     ```bash
      venv\Scripts\activate.bat
      ```
 4. Install the required Python libraries using the following command:
