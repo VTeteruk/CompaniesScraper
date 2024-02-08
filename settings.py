@@ -8,6 +8,8 @@ BASE_GOV_URL = "https://find-and-update.company-information.service.gov.uk/"
 # Searching settings
 DEFAULT_COMPANIES_FIELD = "renovation"
 DEFAULT_CITY = "London"
+USE_DIRECT_URL = True
+DIRECT_URL = "https://www.google.com/maps/search/renovation/@54.5739916,-1.2589921,11z?entry=ttu"
 
 # File names setting
 FILE_PATH_FOR_CSV = path.join("results", "renovation_leads.csv")
