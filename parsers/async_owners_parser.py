@@ -69,8 +69,7 @@ class AsyncOwnersParser:
             return []
 
         soup = BeautifulSoup(text_response, "html.parser")
-        business_owners = self.extract_business_owners(soup)
-        return business_owners
+        return self.extract_business_owners(soup)
 
     async def look_for_owners(self, session, company: Company) -> None:
         url = self.search_url(company.name)
