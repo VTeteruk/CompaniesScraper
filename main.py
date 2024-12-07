@@ -37,6 +37,7 @@ def main() -> None:
             site_url = parser.generate_google_maps_url(
                 companies_field=companies_field, city=city
             )
+            logging.info(f"URL: {site_url}")
             data = parser.extract_google_maps_data(site_url)
             if any([company.website for company in data]):
                 break
