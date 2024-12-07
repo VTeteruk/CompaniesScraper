@@ -1,11 +1,15 @@
 import time
-from selenium.common import NoSuchElementException
+from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import re
 
-from settings import BASE_GOOGLE_MAPS_URL, configure_logging, USE_DIRECT_URL, DIRECT_URL
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
+
+import settings
+from settings import BASE_GOOGLE_MAPS_URL, configure_logging, INPUT_MODE, DIRECT_URL
 from models.models import Company
 from parsers.chrome_parser import ChromeParser
 
@@ -25,8 +29,19 @@ class GoogleMapsUrlParser(ChromeParser):
 
         return correct_url
 
+    def accept_cookies(self) -> None:
+        try:
+            WebDriverWait(self.driver, 3).until(
+                expected_conditions.presence_of_element_located((By.XPATH, "//form[@action='https://consent.google.com/save']"))
+            ).click()
+        except TimeoutException:
+            return
+
     def extract_city_coordinates(self, city: str) -> str:
         self.driver.get(BASE_GOOGLE_MAPS_URL + city.replace(" ", "+"))
+
+        self.accept_cookies()
+
         correct_url = self.wait_for_url_change()
 
         # Extracting and returning the city coordinates from the correct URL
@@ -39,7 +54,7 @@ class GoogleMapsUrlParser(ChromeParser):
             self, companies_field: str, city: str,
     ) -> str:
         """Generate url for searching companies with companies_field in the city"""
-        if USE_DIRECT_URL:
+        if not INPUT_MODE:
             return DIRECT_URL
         logging.info(f"Generating url for {companies_field} in {city}...")
         city_coordinates = self.extract_city_coordinates(city=city)
@@ -97,7 +112,11 @@ class GoogleMapsParser(GoogleMapsUrlParser):
     def extract_google_maps_data(self, google_maps_url: str) -> list[Company]:
         self.driver.get(google_maps_url)
 
+        if not settings.INPUT_MODE:
+            self.accept_cookies()
+
         logging.info("Scrolling to the end of the sidebar...")
+
         self.scroll_to_the_end_of_sidebar()
 
         companies = [
