@@ -12,13 +12,13 @@ def get_user_input() -> tuple[str, str]:
     while True:
         companies_field_input = input(f"Enter companies' field: ")
         if not companies_field_input or not companies_field_input.isalpha():
-            logging.info("Please enter a valid companies' filed")
+            logging.warning("Please enter a valid companies' filed")
             continue
         break
     while True:
         city_input = input(f"Enter city: ")
         if not city_input or not city_input.isalpha():
-            logging.info("Please enter a valid city")
+            logging.warning("Please enter a valid city")
             continue
         break
     return companies_field_input, city_input
