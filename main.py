@@ -2,30 +2,23 @@ import logging
 
 from parsers.companies_data_parser import CompaniesDataParser
 from utilities.saver import save_data_to_excel, save_data_to_csv
-from settings import (
-    DEFAULT_COMPANIES_FIELD,
-    DEFAULT_CITY,
-    FILE_PATH_FOR_XLSX,
-    FILE_PATH_FOR_CSV,
-    INPUT_MODE,
-    configure_logging,
-)
+import settings
 
-configure_logging()
+settings.configure_logging()
 
 
 def get_user_input() -> tuple[str, str]:
-    companies_field_input = input(f"Enter companies' field ({DEFAULT_COMPANIES_FIELD}): ")
-    city_input = input(f"Enter city ({DEFAULT_CITY}): ")
+    companies_field_input = input(f"Enter companies' field ({settings.DEFAULT_COMPANIES_FIELD}): ")
+    city_input = input(f"Enter city ({settings.DEFAULT_CITY}): ")
     return (
-        companies_field_input if companies_field_input else DEFAULT_COMPANIES_FIELD,
-        city_input if city_input else DEFAULT_CITY,
+        companies_field_input if companies_field_input else settings.DEFAULT_COMPANIES_FIELD,
+        city_input if city_input else settings.DEFAULT_CITY,
     )
 
 
 def main() -> None:
     companies_field, city = None, None
-    if INPUT_MODE:
+    if settings.INPUT_MODE:
         companies_field, city = get_user_input()
 
     with CompaniesDataParser() as parser:
@@ -38,8 +31,11 @@ def main() -> None:
     parser.find_owners(data)
 
     logging.info("Saving data...")
-    save_data_to_excel(data, file_path=FILE_PATH_FOR_XLSX)
-    save_data_to_csv(data, file_path=FILE_PATH_FOR_CSV)
+    if not settings.PYTHON_LISTS_IN_RESULTS:
+        for company in data:
+            company.owners = "; ".join(company.owners) if company.owners else ""
+    save_data_to_excel(data, file_path=settings.FILE_PATH_FOR_XLSX)
+    save_data_to_csv(data, file_path=settings.FILE_PATH_FOR_CSV)
 
 
 if __name__ == "__main__":

@@ -23,6 +23,7 @@ USER_AGENT = (
 
 # Starter settings
 INPUT_MODE = True
+PYTHON_LISTS_IN_RESULTS = False
 
 
 # Logging settings

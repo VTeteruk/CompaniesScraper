@@ -42,9 +42,9 @@ class AsyncOwnersParser:
 
                 business_owners.append(
                     str(BusinessOwner(
-                        person_name,
-                        person_role,
-                        person_status_tag.text.strip() if person_status_tag else "UNKNOWN"
+                        name=person_name,
+                        role=person_role,
+                        status=person_status_tag.text.strip() if person_status_tag else "UNKNOWN"
                     ))
                 )
 
@@ -72,7 +72,7 @@ class AsyncOwnersParser:
         business_owners = self.extract_business_owners(soup)
         return business_owners
 
-    async def set_owners(self, session, company: Company) -> None:
+    async def look_for_owners(self, session, company: Company) -> None:
         url = self.search_url(company.name)
         text_response = await self.fetch_url_content(session, url)
 
@@ -98,7 +98,7 @@ class AsyncOwnersParser:
         headers = {"user-agent": USER_AGENT}
 
         async with aiohttp.ClientSession(headers=headers) as session:
-            coroutines = [self.set_owners(session, company) for company in companies]
+            coroutines = [self.look_for_owners(session, company) for company in companies]
             await asyncio.gather(*coroutines)
 
     def find_owners(self, companies: list[Company]) -> None:
