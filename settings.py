@@ -6,7 +6,7 @@ BASE_GOOGLE_MAPS_URL = "https://www.google.com/maps/search/"
 BASE_GOV_URL = "https://find-and-update.company-information.service.gov.uk/"
 
 # Searching settings
-DEFAULT_COMPANIES_FIELD = "renovation"
+DEFAULT_COMPANIES_FIELD = "Renovation"
 DEFAULT_CITY = "London"
 DIRECT_URL = "https://www.google.com/maps/search/renovation/@54.5739916,-1.2589921,11z?entry=ttu"
 
@@ -24,6 +24,7 @@ USER_AGENT = (
 # Starter settings
 INPUT_MODE = True
 PYTHON_LISTS_IN_RESULTS = False
+TRIES_FOR_WEBSITE = 3
 
 
 # Logging settings
